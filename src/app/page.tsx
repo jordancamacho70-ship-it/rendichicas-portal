@@ -1,10 +1,11 @@
 'use client';
 import './globals.css';
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState } from 'react';
 import { 
   Search, LayoutDashboard, ShieldCheck, Zap, ExternalLink, Menu, X, ChevronRight, User, LogOut, BookOpen
 } from 'lucide-react';
 
+// Estructura fija para evitar errores de mapeo
 interface Manual {
   id: number;
   codigo: string;
@@ -14,13 +15,13 @@ interface Manual {
 }
 
 export default function RendichicasPortalDynamic() {
-  const [autorizado, setAutorizado] = useState<boolean>(false);
-  const [usuario, setUsuario] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [busqueda, setBusqueda] = useState<string>("");
-  const [categoriaActiva, setCategoriaActiva] = useState<string>("Todos");
-  const [menuAbierto, setMenuAbierto] = useState<boolean>(false);
-  const [rolUsuario, setRolUsuario] = useState<string>(""); 
+  const [autorizado, setAutorizado] = useState(false);
+  const [usuario, setUsuario] = useState("");
+  const [password, setPassword] = useState("");
+  const [busqueda, setBusqueda] = useState("");
+  const [categoriaActiva, setCategoriaActiva] = useState("Todos");
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const [rolUsuario, setRolUsuario] = useState(""); 
 
   const usuariosValidos = [
     { user: "ventas.estacion", pass: "vendedor2026", rol: "VENDEDOR" },
@@ -38,13 +39,14 @@ export default function RendichicasPortalDynamic() {
   ];
 
   const filtrados = manuales.filter(m => {
-    const cumpleBusqueda = m.titulo.toLowerCase().includes(busqueda.toLowerCase()) || m.codigo.toLowerCase().includes(busqueda.toLowerCase());
+    const cumpleBusqueda = m.titulo.toLowerCase().includes(busqueda.toLowerCase()) || 
+                          m.codigo.toLowerCase().includes(busqueda.toLowerCase());
     const cumpleCategoria = categoriaActiva === "Todos" || m.cat === categoriaActiva;
-    let cumpleRol = rolUsuario === "GERENTE/SUPERVISOR" || (rolUsuario === "VENDEDOR" && m.cat === "Ventas");
+    const cumpleRol = rolUsuario === "GERENTE/SUPERVISOR" || (rolUsuario === "VENDEDOR" && m.cat === "Ventas");
     return cumpleBusqueda && cumpleCategoria && cumpleRol;
   });
 
-  const manejarLogin = (e: FormEvent<HTMLFormElement>) => {
+  const manejarLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const loginExitoso = usuariosValidos.find(u => u.user === usuario && u.pass === password);
     if (loginExitoso) {
@@ -59,22 +61,111 @@ export default function RendichicasPortalDynamic() {
 
   if (!autorizado) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#E6007E] to-[#9d0056] flex items-center justify-center p-4 font-sans">
-        <div className="bg-white/95 backdrop-blur-sm p-8 md:p-12 rounded-[2.5rem] shadow-2xl w-full max-w-[400px] border border-white/20">
-          <div className="flex justify-center mb-8">
-            <div className="bg-pink-50 p-4 rounded-3xl">
-               <img src="/mascota.jpg" className="w-20 h-20 rounded-2xl object-cover shadow-md" alt="Logo" />
+      <div className="min-h-screen bg-gradient-to-br from-[#E6007E] to-[#9d0056] flex items-center justify-center p-4">
+        <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl w-full max-w-[400px]">
+          <div className="flex justify-center mb-6">
+            <img src="/mascota.jpg" className="w-20 h-20 rounded-2xl object-cover shadow-md" alt="Logo" />
+          </div>
+          <h2 className="text-2xl font-black text-center text-gray-800 mb-8">Portal Estaciones</h2>
+          <form onSubmit={manejarLogin} className="space-y-4">
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#E6007E]" size={18} />
+              <input 
+                type="text" 
+                className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 ring-[#E6007E] text-gray-900 font-semibold"
+                placeholder="Usuario"
+                value={usuario}
+                onChange={(e) => setUsuario(e.target.value)}
+                required
+              />
+            </div>
+            <input 
+              type="password" 
+              className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 ring-[#E6007E] text-gray-900 font-semibold text-center"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button type="submit" className="w-full bg-[#E6007E] text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-[#c4006b] transition-all">
+              ACCEDER
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col text-gray-900">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="bg-[#E6007E] p-2 rounded-xl">
+            <BookOpen className="text-white" size={20} />
+          </div>
+          <h1 className="font-black text-xl text-gray-800">RENDI<span className="text-[#E6007E]">PORTAL</span></h1>
+        </div>
+        <div className="flex items-center gap-3">
+          <button onClick={() => { setAutorizado(false); setUsuario(""); setPassword(""); }} className="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl font-bold text-xs hover:bg-red-50 hover:text-red-500 transition-all">
+            <LogOut size={16} />
+          </button>
+          <button onClick={() => setMenuAbierto(!menuAbierto)} className="lg:hidden p-2 text-gray-600 bg-gray-100 rounded-xl">
+            <Menu size={20}/>
+          </button>
+        </div>
+      </header>
+
+      <div className="flex flex-1 relative">
+        <aside className={`
+          fixed lg:sticky top-[73px] left-0 z-40 w-full lg:w-72 h-[calc(100vh-73px)] bg-white lg:bg-transparent transition-all
+          ${menuAbierto ? 'translate-y-0' : '-translate-y-full lg:translate-y-0 hidden lg:block'}
+        `}>
+          <nav className="p-6 lg:p-8 space-y-2">
+            {categorias.map(cat => (
+              <button 
+                key={cat}
+                onClick={() => { setCategoriaActiva(cat); setMenuAbierto(false); }}
+                className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-bold text-sm transition-all ${categoriaActiva === cat ? 'bg-[#E6007E] text-white shadow-lg' : 'text-gray-500 hover:bg-white'}`}
+              >
+                {cat === "Todos" ? <LayoutDashboard size={18}/> : cat === "Ventas" ? <Zap size={18}/> : <ShieldCheck size={18}/>}
+                {cat.toUpperCase()}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        <main className="flex-1 p-6 lg:p-10">
+          <div className="max-w-5xl mx-auto">
+            <div className="relative mb-10">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              <input 
+                type="text" 
+                placeholder="Buscar manual..." 
+                className="w-full pl-14 pr-6 py-4 bg-white rounded-2xl shadow-sm border border-gray-100 outline-none focus:ring-2 ring-[#E6007E]/20 text-gray-800 font-medium"
+                onChange={(e) => setBusqueda(e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {filtrados.map((m) => (
+                <div key={m.id} className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-2 flex flex-col group hover:shadow-md transition-all">
+                  <div className="p-6 flex-1">
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block ${m.cat === 'Gerencia' ? 'bg-indigo-50 text-indigo-600' : 'bg-pink-50 text-[#E6007E]'}`}>
+                      {m.cat}
+                    </span>
+                    <h3 className="text-xl font-extrabold text-gray-800 leading-tight group-hover:text-[#E6007E] transition-colors">{m.titulo}</h3>
+                    <p className="text-[10px] font-bold text-gray-300 mt-2">{m.codigo}</p>
+                  </div>
+                  <a href={m.link} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 bg-gray-900 text-white py-5 rounded-[1.8rem] font-bold text-xs hover:bg-[#E6007E] transition-all uppercase tracking-widest">
+                    <ExternalLink size={16} /> Ver Documento
+                  </a>
+                </div>
+              ))}
             </div>
           </div>
-          <h2 className="text-3xl font-black text-center text-gray-800 mb-2 tracking-tighter">¡Bienvenido!</h2>
-          <p className="text-gray-500 text-center mb-8 font-medium">Portal Digital de Estaciones</p>
-          
-          <form onSubmit={manejarLogin} className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-gray-400 uppercase ml-4 tracking-widest">Usuario</label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#E6007E]" size={20} />
-                <input 
-                  type="text" 
-                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 ring-[#E6007E] transition-all text-gray-900 font-semibold"
-                  value={usuario
+        </main>
+      </div>
+      {menuAbierto && <div onClick={() => setMenuAbierto(false)} className="fixed inset-0 bg-black/10 backdrop-blur-sm z-30 lg:hidden" />}
+    </div>
+  );
+}
