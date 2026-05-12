@@ -2,17 +2,23 @@
 import './globals.css';
 import React, { useState } from 'react';
 import { 
-  Search, LayoutDashboard, ShieldCheck, Zap, ExternalLink, Menu, X, ChevronRight
+  Search, LayoutDashboard, ShieldCheck, Zap, ExternalLink, Menu, X, ChevronRight, User
 } from 'lucide-react';
 
 export default function RendichicasPortalDynamic() {
   const [autorizado, setAutorizado] = useState(false);
+  const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [busqueda, setBusqueda] = useState("");
   const [categoriaActiva, setCategoriaActiva] = useState("Todos");
   const [menuAbierto, setMenuAbierto] = useState(false);
+  const [rolUsuario, setRolUsuario] = useState(""); 
 
-  const CLAVE_ACCESO = "rendi2026"; 
+  // CONFIGURACIÓN DE USUARIOS Y CONTRASEÑAS
+  const usuariosValidos = [
+    { user: "ventas.estacion", pass: "vendedor2026", rol: "VENDEDOR" },
+    { user: "gerente.estacion", pass: "gerente2026", rol: "GERENTE/SUPERVISOR" }
+  ];
 
   const manuales = [
     { id: 1, codigo: "MOP-EST-VEN-001-R01", titulo: "Conociendo tu Estación", cat: "Ventas", link: "/docs/Conociendo tu estación.pdf" },
@@ -24,36 +30,58 @@ export default function RendichicasPortalDynamic() {
     { id: 10, codigo: "MOP-COR-GEN-028-RO1", titulo: "Uso aplicativo car mobile", cat: "Ventas", link: "/docs/car-mobile.pdf" }
   ];
 
-  const categorias = ["Todos", "Ventas", "Gerencia"];
-
   const filtrados = manuales.filter(m => {
     const cumpleBusqueda = m.titulo.toLowerCase().includes(busqueda.toLowerCase()) || m.codigo.toLowerCase().includes(busqueda.toLowerCase());
     const cumpleCategoria = categoriaActiva === "Todos" || m.cat === categoriaActiva;
-    return cumpleBusqueda && cumpleCategoria;
+    
+    let cumpleRol = false;
+    if (rolUsuario === "GERENTE/SUPERVISOR") cumpleRol = true; 
+    if (rolUsuario === "VENDEDOR" && m.cat === "Ventas") cumpleRol = true; 
+
+    return cumpleBusqueda && cumpleCategoria && cumpleRol;
   });
 
   const manejarLogin = (e: any) => {
     e.preventDefault();
-    if (password === CLAVE_ACCESO) setAutorizado(true);
-    else alert("Clave incorrecta 🌱");
+    const loginExitoso = usuariosValidos.find(u => u.user === usuario && u.pass === password);
+    
+    if (loginExitoso) {
+      setRolUsuario(loginExitoso.rol);
+      setAutorizado(true);
+    } else {
+      alert("Usuario o contraseña incorrectos 🌱");
+    }
   };
+
+  const categorias = rolUsuario === "VENDEDOR" ? ["Ventas"] : ["Todos", "Ventas", "Gerencia"];
 
   if (!autorizado) {
     return (
-      <div className="min-h-screen bg-[#E6007E] flex items-center justify-center p-6">
-        <div className="bg-white p-10 rounded-[3rem] shadow-2xl w-full max-w-md text-center">
-          <img src="/mascota.jpg" className="w-28 h-28 rounded-full border-4 border-pink-100 shadow-xl object-cover mx-auto mb-6" alt="Mascota" />
-          <h1 className="text-3xl font-black mb-2 text-gray-900 tracking-tight">Portal Estaciones</h1>
-          <p className="text-gray-500 mb-8 font-medium">Acceso Privado 🌱</p>
+      <div className="min-h-screen bg-[#E6007E] flex items-center justify-center p-6 font-sans">
+        <div className="bg-white p-10 rounded-[3.5rem] shadow-2xl w-full max-w-md text-center border-t-8 border-pink-100">
+          <img src="/mascota.jpg" className="w-24 h-24 rounded-full border-4 border-pink-50 shadow-lg object-cover mx-auto mb-6" alt="Mascota" />
+          <h1 className="text-2xl font-black mb-1 text-gray-900 tracking-tight">Portal Estaciones</h1>
+          <p className="text-gray-400 mb-8 font-bold text-sm uppercase tracking-widest">Inicio de Sesión</p>
+          
           <form onSubmit={manejarLogin} className="space-y-4">
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
+              <input 
+                type="text" 
+                placeholder="Usuario"
+                className="w-full pl-12 pr-6 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-4 ring-pink-100 border border-gray-100 text-lg"
+                value={usuario}
+                onChange={(e) => setUsuario(e.target.value)}
+              />
+            </div>
             <input 
               type="password" 
               placeholder="Contraseña"
-              className="w-full px-6 py-5 bg-gray-100 rounded-2xl outline-none focus:ring-4 ring-pink-200 text-center text-2xl"
+              className="w-full px-6 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-4 ring-pink-100 text-center border border-gray-100 text-lg"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button type="submit" className="w-full bg-[#E6007E] text-white py-4 rounded-2xl font-black text-lg shadow-lg active:scale-95 transition-all">ENTRAR</button>
+            <button type="submit" className="w-full bg-[#E6007E] text-white py-4 rounded-2xl font-black text-lg shadow-lg active:scale-95 transition-all uppercase tracking-widest">Entrar</button>
           </form>
         </div>
       </div>
@@ -61,14 +89,17 @@ export default function RendichicasPortalDynamic() {
   }
 
   return (
-    <div className="min-h-screen bg-pink-50/50 flex flex-col font-sans text-gray-900">
+    <div className="min-h-screen bg-pink-50/40 flex flex-col font-sans text-gray-900">
       <header className="sticky top-0 z-50 bg-white border-b border-pink-100 px-6 py-4 flex items-center justify-between shadow-sm backdrop-blur-md bg-white/90">
         <div className="flex items-center gap-3">
           <img src="/mascota.jpg" className="w-10 h-10 rounded-xl object-cover" alt="Logo" />
-          <h1 className="font-black text-xl tracking-tighter text-[#E6007E]">RENDI PORTAL</h1>
+          <div>
+            <h1 className="font-black text-xl tracking-tighter text-[#E6007E] leading-none">RENDI PORTAL</h1>
+            <span className="text-[9px] font-black text-gray-400 uppercase">{rolUsuario}</span>
+          </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => setAutorizado(false)} className="px-4 py-2 text-[10px] font-black text-red-400 bg-red-50 rounded-full uppercase">Salir</button>
+          <button onClick={() => { setAutorizado(false); setUsuario(""); setPassword(""); }} className="px-4 py-2 text-[10px] font-black text-red-400 bg-red-50 rounded-full uppercase">Salir</button>
           <button onClick={() => setMenuAbierto(!menuAbierto)} className="lg:hidden p-2 bg-pink-50 text-[#E6007E] rounded-lg">
             {menuAbierto ? <X size={20}/> : <Menu size={20}/>}
           </button>
@@ -104,7 +135,7 @@ export default function RendichicasPortalDynamic() {
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300" size={20} />
               <input 
                 type="text" 
-                placeholder="Buscar manual..." 
+                placeholder="Buscar por nombre o código..." 
                 className="w-full pl-14 pr-6 py-5 bg-white rounded-[2rem] shadow-sm border border-pink-100 outline-none focus:ring-4 ring-pink-100 transition-all font-medium"
                 onChange={(e) => setBusqueda(e.target.value)}
               />
