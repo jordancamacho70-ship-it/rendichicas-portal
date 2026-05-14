@@ -2,7 +2,7 @@
 import './globals.css';
 import React, { useState, FormEvent } from 'react';
 import { 
-  Search, LayoutDashboard, ShieldCheck, Zap, ExternalLink, Menu, X, User, LogOut, BookOpen, PlayCircle, FileText
+  Search, LayoutDashboard, ShieldCheck, Zap, Menu, User, LogOut, BookOpen, PlayCircle, FileText
 } from 'lucide-react';
 
 interface Manual {
@@ -49,7 +49,6 @@ export default function RendichicasPortalDynamic() {
       titulo: "Uso aplicativo car mobile", 
       cat: "Vendedor", 
       link: "/docs/car-mobile.pdf",
-      // VIDEO ACTUALIZADO AQUÍ
       videoUrl: "https://vimeo.com/1192095193?share=copy&fl=sv&fe=ci", 
       onePageUrl: "/docs/onepage-carmobile.pdf", 
       descripcion: "Videotutorial oficial para el uso correcto del aplicativo en pista.",
@@ -76,7 +75,7 @@ export default function RendichicasPortalDynamic() {
       setRolUsuario(loginExitoso.rol);
       setAutorizado(true);
     } else {
-      alert("Credenciales incorrectas ");
+      alert("Credenciales incorrectas"); 
     }
   };
 
@@ -88,7 +87,7 @@ export default function RendichicasPortalDynamic() {
         <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl w-full max-w-[400px]">
           <div className="flex justify-center mb-6"><img src="/mascota.jpg" className="w-20 h-20 rounded-2xl object-cover shadow-md" alt="Logo" /></div>
           <h2 className="text-2xl font-black text-center text-gray-800 mb-2">Portal Estaciones</h2>
-          <p className="text-gray-400 text-center mb-8 font-medium text-sm">Acceso Corporativo 🌱</p>
+          <p className="text-gray-400 text-center mb-8 font-medium text-sm">Acceso Corporativo</p>
           <form onSubmit={manejarLogin} className="space-y-4">
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#E6007E]" size={18} />
