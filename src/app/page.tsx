@@ -76,7 +76,7 @@ export default function RendichicasPortalDynamic() {
       setRolUsuario(loginExitoso.rol);
       setAutorizado(true);
     } else {
-      alert("Credenciales incorrectas 🌱");
+      alert("Credenciales incorrectas ");
     }
   };
 
