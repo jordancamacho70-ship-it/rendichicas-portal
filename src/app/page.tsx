@@ -1,8 +1,8 @@
 'use client';
 import './globals.css';
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { 
-  Search, LayoutDashboard, ShieldCheck, Zap, ExternalLink, Menu, X, ChevronRight, User, LogOut, BookOpen, PlayCircle, FileText
+  Search, LayoutDashboard, ShieldCheck, Zap, ExternalLink, Menu, X, User, LogOut, BookOpen, PlayCircle, FileText
 } from 'lucide-react';
 
 interface Manual {
@@ -11,7 +11,6 @@ interface Manual {
   titulo: string;
   cat: string;
   link: string;
-  // Nuevos campos para el piloto multimedia
   videoUrl?: string;
   onePageUrl?: string;
   descripcion?: string;
@@ -39,17 +38,28 @@ export default function RendichicasPortalDynamic() {
       titulo: "Conociendo tu Estación", 
       cat: "Vendedor", 
       link: "/docs/Conociendo tu estación.pdf",
-      videoUrl: "https://vimeo.com/video_id", // Ejemplo de link de video
-      onePageUrl: "/docs/onepage_estacion.pdf", // Ejemplo de One-Page
+      videoUrl: "https://vimeo.com/video_id", 
+      onePageUrl: "/docs/onepage_estacion.pdf", 
       descripcion: "Guía completa multimedia sobre la infraestructura y estándares de la estación.",
       esPiloto: true 
     },
+    { 
+      id: 10, 
+      codigo: "MOP-COR-GEN-028-RO1", 
+      titulo: "Uso aplicativo car mobile", 
+      cat: "Vendedor", 
+      link: "/docs/car-mobile.pdf",
+      // VIDEO ACTUALIZADO AQUÍ
+      videoUrl: "https://vimeo.com/1192095193?share=copy&fl=sv&fe=ci", 
+      onePageUrl: "/docs/onepage-carmobile.pdf", 
+      descripcion: "Videotutorial oficial para el uso correcto del aplicativo en pista.",
+      esPiloto: true 
+    },
     { id: 2, codigo: "MOP-EST-VEN-002-R01", titulo: "Uso del Dispensario", cat: "Vendedor", link: "/docs/MOP-EST-VEN-002-R01.pdf" },
-    { id: 5, codigo: "MOP-EST-VEN-005-R01", titulo: "Servicio al Cliente", cat: "Vendedor", link: "/docs/Manual servicio al cliente.pdf" },
-    { id: 7, codigo: "MOP-EST-GER-001-R01", titulo: "Conociendo tu Estación (Gerencia)", cat: "Gerencia", link: "/docs/MOP-EST-GER-001-R01.pdf" },
-    { id: 8, codigo: "MOP-EST-GER-002-R01", titulo: "Inicio de Turno", cat: "Gerencia", link: "/docs/MOP-EST-GER-002-R01.pdf" },
-    { id: 9, codigo: "MOP-EST-GER-003-R01", titulo: "Liquidación de Turno", cat: "Gerencia", link: "/docs/MOP-EST-GER-003-R01.pdf" },
-    { id: 10, codigo: "MOP-COR-GEN-028-RO1", titulo: "Uso aplicativo car mobile", cat: "Vendedor", link: "/docs/car-mobile.pdf" }
+    { id: 3, codigo: "MOP-EST-VEN-005-R01", titulo: "Servicio al Cliente", cat: "Vendedor", link: "/docs/Manual servicio al cliente.pdf" },
+    { id: 4, codigo: "MOP-EST-GER-001-R01", titulo: "Conociendo tu Estación (Gerencia)", cat: "Gerencia", link: "/docs/MOP-EST-GER-001-R01.pdf" },
+    { id: 5, codigo: "MOP-EST-GER-002-R01", titulo: "Inicio de Turno", cat: "Gerencia", link: "/docs/MOP-EST-GER-002-R01.pdf" },
+    { id: 6, codigo: "MOP-EST-GER-003-R01", titulo: "Liquidación de Turno", cat: "Gerencia", link: "/docs/MOP-EST-GER-003-R01.pdf" }
   ];
 
   const filtrados = manuales.filter(m => {
@@ -84,7 +94,7 @@ export default function RendichicasPortalDynamic() {
               <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#E6007E]" size={18} />
               <input type="text" className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 ring-[#E6007E] text-gray-900 font-semibold" placeholder="Usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} required />
             </div>
-            <input type="password" className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 ring-[#E6007E] text-gray-900 font-semibold text-center" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <input type="password" name="password" className="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 ring-[#E6007E] text-gray-900 font-semibold text-center" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
             <button type="submit" className="w-full bg-[#E6007E] text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-[#c4006b] transition-all">ACCEDER</button>
           </form>
         </div>
@@ -138,7 +148,6 @@ export default function RendichicasPortalDynamic() {
                     {m.descripcion && <p className="text-sm text-gray-500 mt-3 leading-relaxed">{m.descripcion}</p>}
                   </div>
 
-                  {/* SECCIÓN DE BOTONES MULTIMEDIA */}
                   <div className="grid grid-cols-1 gap-2 p-2">
                     <a href={m.link} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 bg-gray-900 text-white py-4 rounded-2xl font-bold text-xs hover:bg-[#E6007E] transition-all shadow-md active:scale-95">
                       <FileText size={16} /> MANUAL PDF
