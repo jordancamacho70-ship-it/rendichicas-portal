@@ -44,7 +44,7 @@ export default function RendichicasPortalDynamic() {
       esPiloto: true 
     },
     { 
-      id: 10, 
+      id: 10,  
       codigo: "MOP-COR-GEN-028-RO1", 
       titulo: "Uso aplicativo car mobile", 
       cat: "Vendedor", 
